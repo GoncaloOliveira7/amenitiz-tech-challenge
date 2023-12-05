@@ -48,7 +48,7 @@ The final price already has all discounts applied to them.
 Allows the user to quit the application
 
 ## Getting Started
-To launch the application open the project in your terminal and run the command `bin/bin/store.rb`
+To launch the application open the project in your terminal and run the command `bin/store.rb`
 Note: Make sure you are using the ruby version 3.2.2
 
 ## Running Tests
