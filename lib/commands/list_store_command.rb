@@ -10,7 +10,7 @@ class ListStoreCommand < Command
   end
 
   def perform(_)
-    @output.call 'add <product_code> <quantity>'
+    @output.call 'a <product_code> <quantity>'
     @output.call @products
   end
 
