@@ -3,7 +3,7 @@
 class ProductNotFound < StandardError
 end
 
-class Cart
+class InstructionTest
   attr_reader :available_products
 
   def initialize(available_products:)
