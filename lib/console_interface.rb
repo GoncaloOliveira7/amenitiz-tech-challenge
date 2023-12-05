@@ -32,9 +32,9 @@ class ConsoleInterface
         product_code = instruction_list[1]
         quantity = instruction_list[2].to_i
         add_product(product_code, quantity)
-        console_puts @shooping_cart
+        show_cart
       when 'c'
-        console_puts @shooping_cart
+        show_cart
       when 'q'
         return
       else
@@ -48,7 +48,6 @@ class ConsoleInterface
     instruction_list.first
   end
 
-
   def add_product(product_code, quantity)
     product = PRODUCTS.find { |e| e[:code].downcase == product_code }
     checkout_item = @shooping_cart.find { |e| e[:code].downcase == product_code }
@@ -56,17 +55,52 @@ class ConsoleInterface
       checkout_item[:quantity] += quantity
     else
       @shooping_cart.append({
-        code: product[:code],
-        quantity: quantity,
-        price_per_unit: product[:price]
-      })
+                              code: product[:code],
+                              quantity:,
+                              price_per_unit: product[:price]
+                            })
     end
   end
 
   def list_products(products)
-    header = "| Product Code | Name | Price |"
+    header = '| Product Code | Name | Price |'
     produtct_items = products.map { |e| "| #{e[:code]} | #{e[:name]} | #{e[:price]} € |" }
     [header, produtct_items].join("\n")
+  end
+
+  def show_cart
+    sum = @shooping_cart.sum do |shooping_item|
+      calculate_item_price(shooping_item)
+    end
+    console_puts sum
+  end
+
+  def calculate_item_price(shooping_item)
+    original_price = shooping_item[:price_per_unit] * shooping_item[:quantity]
+    discount_value = apply_strawberry_discout(shooping_item) + apply_green_tea_discout(shooping_item) + apply_coffee_discout(shooping_item)
+
+    (original_price - discount_value).round(2)
+  end
+
+  def apply_green_tea_discout(shooping_item)
+    return 0.0 if shooping_item[:code] != 'GR1' || shooping_item[:quantity] < 2
+
+    discount = (shooping_item[:quantity] / 2).to_i * shooping_item[:price_per_unit]
+    (shooping_item[:price_per_unit] * shooping_item[:quantity] - discount).round(2)
+  end
+
+  def apply_strawberry_discout(shooping_item)
+    return 0.0 if shooping_item[:code] != 'SR1' || shooping_item[:quantity] < 3
+
+    discount = 0.1
+    (shooping_item[:price_per_unit] * shooping_item[:quantity] * discount).round(2)
+  end
+
+  def apply_coffee_discout(shooping_item)
+    return 0.0 if shooping_item[:code] != 'CF1' || shooping_item[:quantity] < 3
+
+    discount = 1.0 / 3.0
+    (shooping_item[:price_per_unit] * shooping_item[:quantity] * discount).round(2)
   end
 
   def line_break
