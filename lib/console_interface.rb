@@ -5,12 +5,6 @@ require_relative 'products/green_tea_product'
 require_relative 'products/strawberry_product'
 require_relative 'cart'
 
-PRODUCTS = [
-  GreenTeaProduct.new(code: 'GR1', name: 'Green Tea', price: 3.11),
-  StrawberryProduct.new(code: 'SR1', name: 'Strawberries', price: 5.00),
-  CoffeeProduct.new(code: 'CF1', name: 'Coffee', price: 11.23)
-]
-
 INITIAL_PROMPT = "Hello! Welcome to my store!
 
 Options:
@@ -26,7 +20,12 @@ class ConsoleInterface
   def initialize(input: $stdin, output: $stdout)
     @input = input
     @output = output
-    @cart = Cart.new(available_products: PRODUCTS)
+    @products = [
+      GreenTeaProduct.new(code: 'GR1', name: 'Green Tea', price: 3.11),
+      StrawberryProduct.new(code: 'SR1', name: 'Strawberries', price: 5.00),
+      CoffeeProduct.new(code: 'CF1', name: 'Coffee', price: 11.23)
+    ]
+    @cart = Cart.new(available_products: @products)
   end
 
   def run
@@ -44,7 +43,7 @@ class ConsoleInterface
       when 'q'
         return
       else
-        raise InvalidInstruction.new("Instruction '#{get_command(instruction_list)}' not recognized") 
+        raise InvalidInstruction "Instruction '#{get_command(instruction_list)}' not recognized"
       end
     rescue InvalidInstruction, ProductNotFound => e
       console_puts "Invalid Instruction error: #{e.message}"
@@ -59,9 +58,9 @@ class ConsoleInterface
   def get_quantity(instruction_list)
     quantity = instruction_list[2]
 
-    raise InvalidInstruction.new("Quantity can't be blank") if quantity.nil?
+    raise InvalidInstruction "Quantity can't be blank" if quantity.nil?
 
-    raise InvalidInstruction.new('Quantity must be positive') if quantity.to_i.negative?
+    raise InvalidInstruction 'Quantity must be positive' if quantity.to_i.negative?
 
     quantity.to_i
   end
@@ -69,14 +68,14 @@ class ConsoleInterface
   def get_product_code(instruction_list)
     product_code = instruction_list[1]
 
-    raise InvalidInstruction.new("Product code can't be blank") if product_code.nil?
+    raise InvalidInstruction "Product code can't be blank" if product_code.nil?
 
     product_code
   end
 
   def show_store
     console_puts 'add <product_code> <quantity>'
-    console_puts list_products(PRODUCTS)
+    console_puts list_products
   end
 
   def add_product(instruction_list)
@@ -90,9 +89,9 @@ class ConsoleInterface
     console_puts(@cart)
   end
 
-  def list_products(products)
+  def list_products
     header = '| Product Code | Name | Price |'
-    [header, products].join("\n")
+    [header, @products].join("\n")
   end
 
   def console_puts(question)
