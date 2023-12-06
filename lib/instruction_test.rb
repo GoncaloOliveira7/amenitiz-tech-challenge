@@ -31,6 +31,6 @@ class InstructionTest
       shooping_item[:product].final_price(shooping_item[:quantity])
     end
 
-    "| Basket | Total Price Expected |\n| #{basket} | #{total_price}€ |"
+    "| Basket | Total Price |\n| #{basket} | #{total_price}€ |"
   end
 end
