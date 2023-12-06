@@ -42,7 +42,7 @@ Here is an example:
 ```
 >>> a GR1 5
 ==============================
-| Basket | Total Price Expected |
+| Basket | Total Price |
 | GR1,GR1,GR1,GR1,GR1 | 9.33€ |
 ==============================
 ```
